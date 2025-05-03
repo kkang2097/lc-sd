@@ -124,9 +124,8 @@ const DagVisualizerCanvas: React.FC = () => {
 
 const DagVisualizer: React.FC = () => {
   return (
-    <div className="w-full border border-gray-300 rounded-xl p-4 shadow-sm">
-      <h2 className="text-lg font-bold text-gray-700 mb-4">DAG Visualizer</h2>
-      <div className="h-[420px] rounded-md overflow-hidden">
+    <div className="w-full rounded-xl p-1 shadow-sm">
+      <div className="h-[600px] rounded-md overflow-hidden">
         <ReactFlowProvider>
           <DagVisualizerCanvas />
         </ReactFlowProvider>

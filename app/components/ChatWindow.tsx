@@ -10,9 +10,9 @@ const ChatWindowContent: React.FC = () => {
   const { messages } = useContext(chatContext);
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 w-full h-min-screen flex flex-col">
-      <div className="flex-1">
-        <div className="flex flex-col mb-2">
+    <div className="border border-gray-300 rounded-lg p-4 w-full h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col gap-4">
           {messages.map((message: MessageProps, index: number) => (
             <Message
               key={index}
@@ -22,7 +22,7 @@ const ChatWindowContent: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="mt-auto">
+      <div className="mt-4">
         <ChatBox />
       </div>
     </div>
