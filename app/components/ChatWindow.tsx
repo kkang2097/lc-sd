@@ -8,7 +8,7 @@ import type { MessageProps } from './Message';
 
 const ChatWindowContent: React.FC = () => {
   const { messages, setMessages } = useContext(GlobalContext);
-
+  const { nodes, edges, content} = useContext(GlobalContext);
   return (
     <div className="h-full rounded-lg p-4 w-full h-full flex flex-col">
       <div className="flex-1 overflow-y-auto">
@@ -23,7 +23,7 @@ const ChatWindowContent: React.FC = () => {
         </div>
       </div>
       <div className="mt-4">
-        <ChatBox messages={messages} setMessages={setMessages} />
+        <ChatBox messages={messages} setMessages={setMessages} nodes={nodes} edges={edges} content={content} />
       </div>
     </div>
   );
