@@ -3,18 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary-pure: #9b31a0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary-pure: var(--primary-pure);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #d1cbcb;
+    --background: #ffffff;
     --foreground: #0d0b0b;
   }
 }
@@ -23,4 +25,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Add Tailwind utility classes for primary-pure color */
+@layer utilities {
+  .text-primary-pure {
+    color: var(--primary-pure);
+  }
+  .bg-primary-pure {
+    background-color: var(--primary-pure);
+  }
+  .border-primary-pure {
+    border-color: var(--primary-pure);
+  }
 }
