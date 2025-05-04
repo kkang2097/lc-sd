@@ -19,6 +19,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { GlobalContext } from '../providers/GlobalProvider';
+import ContextMenu from './ContextMenu';
 
 const DagVisualizerCanvas: React.FC = () => {
   const { nodes, setNodes, onNodesChange } = useContext(GlobalContext);
@@ -26,6 +27,7 @@ const DagVisualizerCanvas: React.FC = () => {
 
   const [history, setHistory] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
   const [future, setFuture] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
   // Helper: Save current state to history
   const pushToHistory = useCallback(() => {
@@ -75,6 +77,54 @@ const DagVisualizerCanvas: React.FC = () => {
     [onEdgesChange, pushToHistory]
   );
 
+  const handleContextMenu = useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      setContextMenu({ x: event.clientX, y: event.clientY });
+    },
+    []
+  );
+
+  const handleAddNode = useCallback(() => {
+    pushToHistory();
+    const newNode: Node = {
+      id: `${nodes.length + 1}`,
+      type: 'default',
+      data: { label: `Node ${nodes.length + 1}` },
+      position: { x: 100, y: 100 },
+    };
+    setNodes((nds) => [...nds, newNode]);
+    setContextMenu(null);
+  }, [nodes, setNodes, pushToHistory]);
+
+  const handleDeleteSelected = useCallback(() => {
+    pushToHistory();
+    const selectedNodes = nodes.filter((node) => node.selected);
+    const selectedNodeIds = selectedNodes.map((node) => node.id);
+    const selectedEdges = edges.filter(
+      (edge) =>
+        selectedNodeIds.includes(edge.source) || selectedNodeIds.includes(edge.target)
+    );
+
+    setNodes((nds) => nds.filter((node) => !selectedNodeIds.includes(node.id)));
+    setEdges((eds) => eds.filter((edge) => !selectedEdges.includes(edge)));
+    setContextMenu(null);
+  }, [nodes, edges, setNodes, setEdges, pushToHistory]);
+
+  const handleClearCanvas = useCallback(() => {
+    pushToHistory();
+    setNodes([]);
+    setEdges([]);
+    setContextMenu(null);
+  }, [setNodes, setEdges, pushToHistory]);
+
+  // Close context menu when clicking outside
+  useEffect(() => {
+    const handleClick = () => setContextMenu(null);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -99,12 +149,23 @@ const DagVisualizerCanvas: React.FC = () => {
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onConnect={handleConnect}
+        onContextMenu={handleContextMenu}
         connectionLineType={ConnectionLineType.SmoothStep}
         fitView
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         <Controls />
       </ReactFlow>
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onClose={() => setContextMenu(null)}
+          onAddNode={handleAddNode}
+          onDeleteSelected={handleDeleteSelected}
+          onClearCanvas={handleClearCanvas}
+        />
+      )}
     </div>
   );
 };
