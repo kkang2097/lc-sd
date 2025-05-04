@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -18,24 +18,11 @@ import ReactFlow, {
   NodeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
-const INITIAL_NODES: Node[] = [
-  { id: '1', type: 'input', data: { label: 'Start' }, position: { x: 250, y: 0 } },
-  { id: '2', data: { label: 'Process A' }, position: { x: 100, y: 100 } },
-  { id: '3', data: { label: 'Process B' }, position: { x: 400, y: 100 } },
-  { id: '4', type: 'output', data: { label: 'End' }, position: { x: 250, y: 200 } },
-];
-
-const INITIAL_EDGES: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-  { id: 'e2-4', source: '2', target: '4', animated: true },
-  { id: 'e3-4', source: '3', target: '4', animated: true },
-];
+import { GlobalContext } from '../providers/GlobalProvider';
 
 const DagVisualizerCanvas: React.FC = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
+  const { nodes, setNodes, onNodesChange } = useContext(GlobalContext);
+  const { edges, setEdges, onEdgesChange } = useContext(GlobalContext);
 
   const [history, setHistory] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
   const [future, setFuture] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);

@@ -3,14 +3,14 @@
 import React, { useContext } from 'react';
 import Message from './Message';
 import ChatBox from './ChatBox';
-import { ChatProvider, chatContext } from '../providers/ChatProvider';
+import { GlobalContext } from '../providers/GlobalProvider';
 import type { MessageProps } from './Message';
 
 const ChatWindowContent: React.FC = () => {
-  const { messages } = useContext(chatContext);
+  const { messages, setMessages } = useContext(GlobalContext);
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 w-full h-full flex flex-col">
+    <div className="h-full rounded-lg p-4 w-full h-[100px] flex flex-col">
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col gap-2">
           {messages.map((message: MessageProps, index: number) => (
@@ -23,7 +23,7 @@ const ChatWindowContent: React.FC = () => {
         </div>
       </div>
       <div className="mt-4">
-        <ChatBox />
+        <ChatBox messages={messages} setMessages={setMessages} />
       </div>
     </div>
   );
@@ -31,9 +31,7 @@ const ChatWindowContent: React.FC = () => {
 
 const ChatWindow: React.FC = () => {
   return (
-    <ChatProvider>
       <ChatWindowContent />
-    </ChatProvider>
   );
 };
 

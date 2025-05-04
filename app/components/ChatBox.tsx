@@ -1,12 +1,16 @@
 'use client';
 
 import React, { useState, useContext } from 'react';
-import { chatContext } from '../providers/ChatProvider';
+import { GlobalContext } from '../providers/GlobalProvider';
 import type { MessageProps } from './Message';
 
-const ChatBox: React.FC = () => {
+interface ChatBoxProps {
+  messages: MessageProps[];
+  setMessages: (messages: MessageProps[]) => void;
+}
+
+const ChatBox: React.FC<ChatBoxProps> = ({ messages, setMessages }) => {
   const [inputText, setInputText] = useState('');
-  const { messages, setMessages } = useContext(chatContext);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
