@@ -20,6 +20,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { GlobalContext } from '../providers/GlobalProvider';
 import ContextMenu from './ContextMenu';
+import NodeInfoBox from './NodeInfoBox';
 
 const DagVisualizerCanvas: React.FC = () => {
   const { nodes, setNodes, onNodesChange } = useContext(GlobalContext);
@@ -28,12 +29,35 @@ const DagVisualizerCanvas: React.FC = () => {
   const [history, setHistory] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
   const [future, setFuture] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
   // Helper: Save current state to history
   const pushToHistory = useCallback(() => {
     setHistory((prev) => [...prev, { nodes, edges }]);
     setFuture([]); // clear redo stack on new action
   }, [nodes, edges]);
+
+  const handleNodeUpdate = useCallback((nodeId: string, updates: { x?: number; y?: number; label?: string }) => {
+    pushToHistory();
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            position: {
+              x: updates.x !== undefined ? updates.x : node.position.x,
+              y: updates.y !== undefined ? updates.y : node.position.y,
+            },
+            data: {
+              ...node.data,
+              label: updates.label !== undefined ? updates.label : node.data.label,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes, pushToHistory]);
 
   const undo = useCallback(() => {
     if (history.length === 0) return;
@@ -65,8 +89,25 @@ const DagVisualizerCanvas: React.FC = () => {
     (changes: NodeChange[]) => {
       pushToHistory();
       onNodesChange(changes);
+      
+      // Update selected node based on the changes
+      const selectionChanges = changes.filter(change => change.type === 'select');
+      if (selectionChanges.length > 0) {
+        // Get the current state of nodes after the changes
+        const updatedNodes = nodes.map(node => {
+          const change = selectionChanges.find(c => c.id === node.id);
+          if (change) {
+            return { ...node, selected: change.selected };
+          }
+          return node;
+        });
+        
+        // Find the selected node in the updated state
+        const selectedNodes = updatedNodes.filter(node => node.selected);
+        setSelectedNode(selectedNodes.length === 1 ? selectedNodes[0] : null);
+      }
     },
-    [onNodesChange, pushToHistory]
+    [onNodesChange, pushToHistory, nodes]
   );
 
   const handleEdgesChange = useCallback(
@@ -155,6 +196,7 @@ const DagVisualizerCanvas: React.FC = () => {
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         <Controls />
+        <NodeInfoBox selectedNode={selectedNode} onNodeUpdate={handleNodeUpdate} />
       </ReactFlow>
       {contextMenu && (
         <ContextMenu
