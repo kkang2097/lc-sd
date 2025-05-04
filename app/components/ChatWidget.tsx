@@ -15,7 +15,7 @@ const ChatWidget: React.FC = () => {
       )}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 shadow-lg transition-colors"
+        className="bg-primary-pure hover:bg-primary-dark text-white rounded-full p-4 shadow-lg transition-colors"
       >
         {isOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
