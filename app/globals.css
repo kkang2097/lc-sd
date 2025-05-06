@@ -35,6 +35,11 @@ body {
   .bg-primary-pure {
     background-color: var(--primary-pure);
   }
+
+  .bg-light-medium {
+    background-color: rgb(245 244 245);
+  }
+
   .border-primary-pure {
     border-color: var(--primary-pure);
   }
