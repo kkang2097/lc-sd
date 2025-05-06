@@ -183,7 +183,7 @@ const DagVisualizerCanvas: React.FC = () => {
   }, [undo, redo]);
 
   return (
-    <div className="relative w-full h-full border border-gray-300 rounded-xl p-4 shadow-sm">
+    <div className="relative w-full h-full border border-gray-300 rounded-bl-lg rounded-br-lg shadow-sm">
       <ReactFlow
         nodes={nodes}
         edges={edges}
