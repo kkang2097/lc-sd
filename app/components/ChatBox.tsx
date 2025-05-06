@@ -53,8 +53,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messages, setMessages, nodes, edges, 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto p-1 rounded-lg">
-      <div className="flex gap-2">
+    <form onSubmit={handleSubmit} className="w-full mx-auto rounded-lg">
+      <div className="flex gap-2 min-h-[50px]">
         <input
           type="text"
           value={inputText}

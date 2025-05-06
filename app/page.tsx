@@ -10,7 +10,6 @@ export default function Home() {
       <GlobalProvider>
         <TopBar />
         <PageContainer/>
-        <ChatWidget />
       </GlobalProvider>
     </div>
   );
